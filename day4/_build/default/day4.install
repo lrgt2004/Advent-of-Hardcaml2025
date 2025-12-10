@@ -1,0 +1,5 @@
+lib: [
+  "_build/install/default/lib/day4/META"
+  "_build/install/default/lib/day4/dune-package"
+  "_build/install/default/lib/day4/opam"
+]
