@@ -98,7 +98,6 @@ let () =
       (to_int !(outputs.write_idx))
       (to_int !(outputs.cell)); *)
     done;
-    Cyclesim.cycle sim; (*silence*)
   done;
   try
     for _ = 1 to (Config.col_size * n) do
