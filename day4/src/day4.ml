@@ -8,14 +8,14 @@ module type Config = sig
 end
 
 module Day4 (Config : Config) = struct
-  open Config
+  (* open Config *)
   module I = struct
     type 'a t = {
       clock : 'a;
       clear : 'a;
       row_size : 'a [@bits 32];
       col_size : 'a [@bits 32];
-      map : 'a list [@bits 1] [@length row_size * col_size];
+      map : 'a list [@bits 1] [@length 32];
   } [@@deriving hardcaml]
   end
 
@@ -24,6 +24,7 @@ module Day4 (Config : Config) = struct
       ans_part1 : 'a[@bits 32];
       ans_part2 : 'a[@bits 32];
       state : 'a[@bits 4];
+      read_done : 'a[@bits 1];
       _done : 'a[@bits 1];
     } [@@deriving hardcaml]
   end
@@ -141,6 +142,7 @@ module Day4 (Config : Config) = struct
     let ans_part1 = Always.Variable.reg ~width:32 ~enable:vdd r_sync in
     let ans_part2 = Always.Variable.reg ~width:32 ~enable:vdd r_sync in
     let _done = Always.Variable.wire ~default:gnd in
+    let read_done = Always.Variable.wire ~default:gnd in
     Always.(
       compile [ sm.switch[
         ( S_wait
@@ -150,6 +152,7 @@ module Day4 (Config : Config) = struct
             read_idx <-- gndn 32;
             result <-- zero 32;
             _done <-- gnd;
+            read_done <-- gnd;
             sm.set_next S_padding_up
           ] )
         ; 
@@ -203,8 +206,14 @@ module Day4 (Config : Config) = struct
               y <-- gndn 32;
               sm.set_next S_padding_right;
             ];
-            read_idx <-- Signal.uresize (x.value *: i.col_size) 32 +: y.value +: vddn 32;
+            if_ (read_idx.value <>: Signal.of_int ~width:32 31) 
+            [read_idx <-- read_idx.value +: vddn 32;]
+            [
+              read_idx <-- gndn 32;
+              read_done <-- vdd;
+            ];
             if_ ((x.value +: vddn 32 ==: i.row_size) &: (y.value +: vddn 32 ==: i.col_size)) [
+              read_done <-- vdd;
               sm.set_next S_padding_down;
             ]
             [];
@@ -229,7 +238,7 @@ module Day4 (Config : Config) = struct
             read_idx <-- Signal.uresize ((x.value +: vddn 32 +: vddn 32) *: new_col_size) 32 +: vddn 32;
             write_idx <-- Signal.uresize ((x.value +: vddn 32) *: new_col_size) 32 +: y.value +: vddn 32; (*Funny fact that this write_idx always late for one cycle*)
           ];
-          if_ ((x.value +: vddn 32 ==: i.row_size) &: (y.value +: vddn 32 ==: i.col_size)) [
+          if_ (x.value ==: i.row_size) [
             sm.set_next S_done
           ]
           [];
@@ -295,6 +304,7 @@ module Day4 (Config : Config) = struct
     { O.ans_part1 = ans_part1.value;
       ans_part2 = ans_part2.value;
       state = sm.current;
+      read_done = read_done.value;
       _done = _done.value;}
   ;;
 end
