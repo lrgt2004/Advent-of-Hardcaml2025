@@ -88,15 +88,6 @@ let () =
   done;
     while (to_bool !(outputs._done)) == false do
       Cyclesim.cycle sim;
-      (* if (to_int !(outputs.remaining)) == 0 then
-        Printf.printf "ans_part1=%d, ans_part2=%d, state=%d, angle=%d, remaining=%d, idx=%d, ram=%d\n%!"
-        (to_int !(outputs.ans_part1))
-        (to_int !(outputs.ans_part2))
-        (to_int !(outputs.state))
-        (to_int !(outputs.angle))
-        (to_int !(outputs.remaining))
-        (to_int !(outputs.idx))
-        (to_int !(outputs.ram)); *)
     done;
     let _ans1 = !(outputs.ans_part1) in
     let _ans2 = !(outputs.ans_part2) in
