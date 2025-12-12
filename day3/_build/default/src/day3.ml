@@ -25,12 +25,6 @@ module Day3 (Config : Config) = struct
       state : 'a [@bits 2];
       get_next : 'a [@bits 1];
       _done : 'a [@bits 1];
-      cnt : 'a [@bits 64];
-      result : 'a [@bits 64];
-      digit : 'a [@bits 64];
-      prev : 'a [@bits 64];
-      idx : 'a [@bits 64];
-      mx : 'a [@bits 64];
     }
     [@@deriving hardcaml]
   end
@@ -115,12 +109,6 @@ module Day3 (Config : Config) = struct
       state = sm.current;
       _done = _done.value;
       get_next = one_line_done.value;
-      cnt = cnt.value;
-      result = result.value;
-      digit = digit.value;
-      prev = prev.value;
-      idx = idx.value;
-      mx = mx.value;
     }
   end
 end
