@@ -1,0 +1,18 @@
+# dune runtest
+# OCAMLPARAM: unset
+# Shared cache: enabled-except-user-rules
+# Shared cache location: /home/ubuntu/.cache/dune/db
+# Workspace root: /home/ubuntu/workspace/hardcaml/Advent-of-Hardcaml2025/day9
+# Auto-detected concurrency: 2
+# Dune context:
+#  { name = "default"
+#  ; kind = "default"
+#  ; profile = Dev
+#  ; merlin = true
+#  ; fdo_target_exe = None
+#  ; build_dir = In_build_dir "default"
+#  ; instrument_with = []
+#  }
+$ /home/ubuntu/.opam/default/bin/ocamlc.opt -config > /tmp/dune_2e21ae_output
+$ (cd _build/default/test && ./test_day9.exe)
+> Maximized Rectangle Size = 50

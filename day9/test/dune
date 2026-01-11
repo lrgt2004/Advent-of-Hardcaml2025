@@ -1,0 +1,4 @@
+(test
+ (name test_day9)
+ (libraries base hardcaml day9 hardcaml_waveterm)
+ (preprocess (pps ppx_jane ppx_hardcaml)))
