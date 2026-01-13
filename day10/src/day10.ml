@@ -12,7 +12,6 @@ module Day10 (Config : Config) = struct
     type 'a t = {
       clock : 'a [@bits 1];
       clear : 'a [@bits 1];
-      state_length : 'a [@bits 64];
       two_press_length : 'a [@bits 64];
       final_state : 'a [@bits 64];
       press_length : 'a [@bits 64];

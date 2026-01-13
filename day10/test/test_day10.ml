@@ -22,15 +22,7 @@ let () = begin
     "[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}";
     "[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}";
   ] in
-  let trim (s : string) : string =
-    let open String in
-    let l = length s in
-    let i = ref 0 in
-    while !i < l && (s.[!i] = ' ' || s.[!i] = '\t' || s.[!i] = '\r' || s.[!i] = '\n') do incr i done;
-    let j = ref (l - 1) in
-    while !j >= !i && (s.[!j] = ' ' || s.[!j] = '\t' || s.[!j] = '\r' || s.[!j] = '\n') do decr j done;
-    if !i > !j then "" else sub s !i (!j - !i + 1)
-  in
+  let trim = String.trim in
   let extract_bracket s =
     try
       let l = String.index s '[' in
@@ -80,7 +72,7 @@ let () = begin
       let line = trim line in
       match extract_bracket line with
       | None ->
-        (0, 0, [])
+        (0, [])
       | Some pat ->
         let (pat_int, width) = pattern_to_int_and_counts pat in
         let paren_groups = extract_paren_groups line in
@@ -89,13 +81,12 @@ let () = begin
           |> List.map parse_indices
           |> List.map (fun idxs -> indices_to_mask width idxs)
         in
-        (width, pat_int, masks_ints)
+        (pat_int, masks_ints)
     ) lights
   in
   for idx = 0 to List.length results - 1 do
-    let (width, pat_int, masks_ints) = List.nth results idx in
+    let (pat_int, masks_ints) = List.nth results idx in
     inputs.final_state := of_int ~width:64 pat_int;
-    inputs.state_length := of_int ~width:64 width;
     inputs.two_press_length := (sll (of_int ~width:64 1) (List.length masks_ints));
     inputs.press_length := of_int ~width:64 (List.length masks_ints);
     for inner_idx = 0 to List.length masks_ints - 1 do
